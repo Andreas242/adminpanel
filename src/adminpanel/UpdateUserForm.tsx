@@ -1,12 +1,6 @@
 import React from "react";
 
-import {
-  Form,
-  Select,
-  Button,
-  Input,
-  Space,
-} from "antd";
+import { Form, Select, Button, Input, Space } from "antd";
 import Roles from "../consts/Roles";
 
 interface User {
@@ -52,6 +46,7 @@ const UpdateUser = (props: {
           | import("rc-select/lib/Select").DefaultOptionType[]
       ) => void)
     | undefined;
+  selectedUserId: string;
 }) => {
   const [form] = Form.useForm();
 
@@ -72,7 +67,7 @@ const UpdateUser = (props: {
       name="updateUser"
       onFinish={props.onFinish}
       onFinishFailed={props.onFinishFailed}
-      labelCol={{ span: 8 }}
+      labelCol={{ span: 4 }}
       wrapperCol={{ span: 16 }}
       validateMessages={props.validateMessages}
       initialValues={{ remember: true }}
@@ -86,7 +81,7 @@ const UpdateUser = (props: {
 
       <Form.Item label="Rolle">{props.roleList()}</Form.Item>
 
-      <Form.Item label="Kommentar" name="commment">
+      <Form.Item label="Kommentar">
         <TextArea
           value={props.selectedUserComment}
           onChange={props.updateComment}
@@ -94,13 +89,18 @@ const UpdateUser = (props: {
         />
       </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+      <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
         <Space>
           <Button type="primary" htmlType="submit">
             Lagre
           </Button>
 
-          <Button danger htmlType="button" onClick={props.deleteUser}>
+          <Button
+            danger
+            htmlType="button"
+            onClick={props.deleteUser}
+            disabled={!props.selectedUserId}
+          >
             Ta bort bruker
           </Button>
         </Space>

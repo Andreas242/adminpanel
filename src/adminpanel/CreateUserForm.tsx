@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Form, Button, Input } from "antd";
+import { Form, Button, Input, Space } from "antd";
 
 const { TextArea } = Input;
 
@@ -26,12 +26,16 @@ const CreateUser = (props: {
 }) => {
   const [form] = Form.useForm();
 
+  const onReset = () => {
+    form.resetFields();
+  };
+
   return (
     <Form
       name="createUser"
       onFinish={props.onFinish}
       onFinishFailed={props.onFinishFailed}
-      labelCol={{ span: 8 }}
+      labelCol={{ span: 4 }}
       wrapperCol={{ span: 16 }}
       validateMessages={props.validateMessages}
       initialValues={{ remember: true }}
@@ -48,6 +52,7 @@ const CreateUser = (props: {
         label="Epost"
         name="email"
         rules={[{ type: "email" }, { required: true }]}
+        validateTrigger="onBlur"
       >
         <Input />
       </Form.Item>
@@ -60,10 +65,13 @@ const CreateUser = (props: {
         <TextArea maxLength={200} />
       </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
-          Lagre
-        </Button>
+      <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Lagre
+          </Button>
+          <Button onClick={onReset}>Nullstill</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

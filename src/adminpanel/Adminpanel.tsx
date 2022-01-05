@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import Roles from "../consts/Roles";
 import { Form, Radio, RadioChangeEvent, Tabs } from "antd";
-import UpdateUser from "./UpdateUser";
-import CreateUser from "./CreateUser";
-
-interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: Roles;
-  id: string;
-  comment: string;
-}
+import UpdateUser from "./UpdateUserForm";
+import CreateUser from "./CreateUserForm";
+import DeleteModal from "./DeleteUserModal";
+import User from "./UserInterface";
 
 const { TabPane } = Tabs;
 
@@ -21,10 +14,32 @@ const onFinishFailed = (errorInfo: any) => {
 
 const Adminpanel = (props: { currentUser: User; users: User[] }) => {
   const [roleValue, setRoleValue] = useState(Roles.Publikum);
+  const [selectedUser, setSelectedUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: Roles.Publikum,
+    id: "",
+    comment: "",
+  });
   const [selectedUserId, setSelectedUserId] = useState("");
   const [savedSelectedUserId, setSavedSelectedUserId] = useState("");
   const [selectedUserComment, setSelectedUserComment] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+      // TODO: axios send to backend create or update or delete (can be the same call)
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   const onFinish = (values: any) => {
     if (selectedUserId !== "") {
@@ -34,7 +49,7 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
         comment: selectedUserComment,
         email: userEmail,
       };
-      // TODO: axios send to backend create or update
+      // TODO: axios send to backend create or update or delete (can be the same call)
       console.table(user);
     } else {
       const user = {
@@ -44,12 +59,14 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
         email: values.email,
         comment: values.comment,
       };
+      // TODO: axios send to backend create or update or delete (can be the same call)
       console.table(user);
     }
   };
 
   const deleteUser = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     //TODO: open modal for verification of deletion
+    showModal();
     console.log("Delete me");
   };
 
@@ -57,6 +74,7 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
 
   const changeUser = (value: string) => {
     setSelectedUserId(value);
+    setSelectedUser(props.users.filter((user) => user.id === value)[0]);
     setRoleValue(props.users.filter((user) => user.id === value)[0].role);
     setSelectedUserComment(
       props.users.filter((user) => user.id === value)[0].comment
@@ -68,11 +86,15 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
     setRoleValue(e.target.value);
   };
 
-  const updateComment = (value: { currentTarget: { value: React.SetStateAction<string>; }; }) => {
+  const updateComment = (value: {
+    currentTarget: { value: React.SetStateAction<string> };
+  }) => {
     setSelectedUserComment(value.currentTarget.value);
   };
 
-  const updateEmail = (value: { currentTarget: { value: React.SetStateAction<string>; }; }) => {
+  const updateEmail = (value: {
+    currentTarget: { value: React.SetStateAction<string> };
+  }) => {
     setUserEmail(value.currentTarget.value);
   };
 
@@ -108,10 +130,14 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
   };
   /* eslint-disable no-template-curly-in-string */
 
-  
-
   return (
     <>
+      <DeleteModal
+        isModalVisible={isModalVisible}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+        user={selectedUser}
+      />
       <div>
         Du er inlogged som {props.currentUser.firstName}{" "}
         {props.currentUser.lastName}
@@ -130,6 +156,7 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
             deleteUser={deleteUser}
             validateMessages={validateMessages}
             changeUser={changeUser}
+            selectedUserId={selectedUserId}
           />
         </TabPane>
 
@@ -146,8 +173,6 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
           />
         </TabPane>
       </Tabs>
-      {roleValue} :{selectedUserId} : {selectedUserComment} : {userEmail}
-      {/** spare ned ny rolle */}
     </>
   );
 };
