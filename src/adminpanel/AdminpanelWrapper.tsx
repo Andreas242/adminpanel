@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
 import AdminPanel from "./Adminpanel";
 import Roles from "../consts/Roles";
+import User from "./UserInterface";
+const axios = require("axios").default;
 
 const currentUser = {
   firstName: "Andy",
@@ -53,10 +55,42 @@ const h1Styles: any = {
 };
 
 const AdminPanelWrapper = () => {
-    const filteredUserArray = users.filter(function(e) { return e.id !== currentUser.id })
+  const [allUsers, setAllUsers] = useState([
+    {
+      firstName: "",
+      lastName: "",
+      email: "",
+      role: null,
+      id: "",
+      comment: "",
+    },
+  ]);
+
+  const getAllUsers = () => {
+    axios.get("/users").then(function (response: any) {
+        setAllUsers(response);
+    });
+  };
+  
+  const crudUserCall = (user: User) => {
+    axios
+      .post("/user", {
+        user,
+      })
+      .then(function (response: any) {
+        getAllUsers();
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
+  };
+
+  const filteredUserArray = users.filter(function (e) {
+    return e.id !== currentUser.id;
+  });
   return (
     <div style={h1Styles}>
-      <AdminPanel currentUser={currentUser} users={filteredUserArray} />
+      <AdminPanel currentUser={currentUser} users={filteredUserArray} crudUserCall={crudUserCall} />
     </div>
   );
 };

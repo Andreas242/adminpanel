@@ -62,7 +62,7 @@ const CreateUser = (props: {
       </Form.Item>
 
       <Form.Item label="Kommentar" name="comment">
-        <TextArea maxLength={200} />
+        <TextArea maxLength={200} showCount={true} />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 4, span: 16 }}>

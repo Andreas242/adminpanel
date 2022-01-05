@@ -2,15 +2,7 @@ import React from "react";
 
 import { Form, Select, Button, Input, Space } from "antd";
 import Roles from "../consts/Roles";
-
-interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: Roles;
-  id: string;
-  comment: string;
-}
+import User from "./UserInterface";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -86,6 +78,7 @@ const UpdateUser = (props: {
           value={props.selectedUserComment}
           onChange={props.updateComment}
           maxLength={200}
+          showCount={true}
         />
       </Form.Item>
 

@@ -12,7 +12,7 @@ const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
 };
 
-const Adminpanel = (props: { currentUser: User; users: User[] }) => {
+const Adminpanel = (props: { currentUser: User; users: User[], crudUserCall: any }) => {
   const [roleValue, setRoleValue] = useState(Roles.Publikum);
   const [selectedUser, setSelectedUser] = useState({
     firstName: "",
@@ -34,7 +34,10 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
 
   const handleOk = () => {
     setIsModalVisible(false);
-      // TODO: axios send to backend create or update or delete (can be the same call)
+    const user = {
+        userId: selectedUserId,
+    }
+    props.crudUserCall(user);
   };
 
   const handleCancel = () => {
@@ -49,8 +52,8 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
         comment: selectedUserComment,
         email: userEmail,
       };
-      // TODO: axios send to backend create or update or delete (can be the same call)
       console.table(user);
+      props.crudUserCall(user);
     } else {
       const user = {
         role: values.role,
@@ -59,13 +62,12 @@ const Adminpanel = (props: { currentUser: User; users: User[] }) => {
         email: values.email,
         comment: values.comment,
       };
-      // TODO: axios send to backend create or update or delete (can be the same call)
       console.table(user);
+      props.crudUserCall(user);
     }
   };
 
   const deleteUser = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    //TODO: open modal for verification of deletion
     showModal();
     console.log("Delete me");
   };
